@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Cube : MonoBehaviour {
+public class LoadScene : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -13,7 +13,7 @@ public class Cube : MonoBehaviour {
 	
 	}
 
-	public void quit(){
-		Application.Quit();
+	public void LoadTeleporterTestScene(){
+		Application.LoadLevel("TeleporterTest");
 	}
 }
