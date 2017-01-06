@@ -3,21 +3,17 @@ using System.Collections;
 
 public class LoadingScene : MonoBehaviour {
 
+	public float progressInterval = 0.01f;
 	public GameObject ProgressBar;
 	private AsyncOperation async;
 
 	void Start () {
-		if(GlobalVaule.loadLevelName == null){
-			GlobalVaule.loadLevelName = "MainMenu";
-		} else if(GlobalVaule.loadLevelName == "QUIT"){
-			Application.Quit();
-		}
-		AsyncOperation async = Application.LoadLevelAsync(GlobalVaule.loadLevelName);
+		AsyncOperation async = Application.LoadLevelAsync(LoadScenesController.getLevel());
 		StartCoroutine(LoadSceneProgress_1(async));
 	}
 	
 	void Update () {
-		// ProgressBar.GetComponent<UISlider>().value = async.progress;
+		
 	}
 
 	IEnumerator LoadSceneProgress_1(AsyncOperation async){
@@ -32,22 +28,22 @@ public class LoadingScene : MonoBehaviour {
 	}
 
 	IEnumerator LoadSceneProgress_2(AsyncOperation async){
-		int displayProgress = 0;
-		int toProgress = 0;
+		float displayProgress = 0;
+		float toProgress = 0;
 		
 		async.allowSceneActivation = false;
 		while(async.progress < 0.9f) {
-			toProgress = (int)async.progress * 100;
+			toProgress = async.progress;
 			while(displayProgress < toProgress) {
-				++displayProgress;
+				displayProgress+=progressInterval;
 				SetLoadingPercentage(displayProgress);
 				yield return new WaitForEndOfFrame();
 			}
 		}
 
-		toProgress = 100;
+		toProgress = 1;
 		while(displayProgress < toProgress){
-			++displayProgress;
+			displayProgress+=progressInterval;
 			SetLoadingPercentage(displayProgress);
 			yield return new WaitForEndOfFrame();
 		}
@@ -55,6 +51,6 @@ public class LoadingScene : MonoBehaviour {
 	}
 
 	public void SetLoadingPercentage(float displayProgress){
-		ProgressBar.GetComponent<UISlider>().value = displayProgress/100;
+		ProgressBar.GetComponent<UISlider>().value = displayProgress;
 	}
 }

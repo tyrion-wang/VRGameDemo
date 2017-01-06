@@ -31,8 +31,7 @@ public class MenuList : MonoBehaviour {
 
 	public void OnClick(GameObject button)
 	{
-		GlobalVaule.loadLevelName = buttonInfo.getLoadSceneName(button.name);
-		Application.LoadLevel("LoadingScene");
+		LoadScenesController.go(buttonInfo.getLoadSceneName(button.name));
 	}
 	
 	// Update is called once per frame

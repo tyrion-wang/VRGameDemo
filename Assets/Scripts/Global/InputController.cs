@@ -11,7 +11,7 @@ public class InputController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(Input.GetButtonUp(InputUtil.buttonB)){
-			Application.Quit();
+			LoadScenesController.back();
 		}
 	}
 }
