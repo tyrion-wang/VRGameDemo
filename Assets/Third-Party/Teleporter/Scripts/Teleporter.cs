@@ -55,7 +55,7 @@ public class Teleporter : MonoBehaviour {
         if(isPointerActive){
             // 手柄转动TeleportController
             boxGyr = PicoVRBaseDevice.GetDevice().GetBoxSensorGyr();
-            pointer_pitch += -boxGyr[0] * PointSensitivity;
+            pointer_pitch += boxGyr[1] * PointSensitivity;
             pointer_yaw += -boxGyr[2] * PointSensitivity;
             if(pointer_pitch>maxHorizontal) pointer_pitch = maxHorizontal;
             if(pointer_pitch<-maxHorizontal) pointer_pitch = -maxHorizontal;
@@ -63,8 +63,8 @@ public class Teleporter : MonoBehaviour {
             if(pointer_yaw<-maxVertical) pointer_yaw = -maxVertical;
             transform.localRotation = Quaternion.Euler(pointer_pitch, pointer_yaw, 0);
 
-            pitchLabel.GetComponent<TextMesh>().text = "Horizontal:"+pointer_pitch;
-            yawLabel.GetComponent<TextMesh>().text = "Vertical  :"+pointer_yaw;
+            pitchLabel.GetComponent<TextMesh>().text = "Horizontal:"+pointer_yaw;
+            yawLabel.GetComponent<TextMesh>().text = "Vertical  :"+pointer_pitch;
         }
 
         if (Input.GetButtonUp(InputUtil.buttonX))
