@@ -13,12 +13,18 @@ public class AxleInfo {
 public class SimpleCarController : MonoBehaviour {
     public List<AxleInfo> axleInfos; 
     public float maxMotorTorque;
+    public float maxBrakeTorque = 1000.0f;
     public float maxSteeringAngle;
     private bool isMove = false;
     private float motor = 0.0f;
     public float acceleration = 1.0f;
+    private bool isBrake = false;
+    private bool isBack = false;
     void Start()
     {
+        // 车辆之心提前，靠近发动机
+        transform.GetComponent<Rigidbody>().centerOfMass += new Vector3(0, -0.3f, 0.8f);
+
         AxleInfo frontAxle = new AxleInfo();
         frontAxle.leftWheel = transform.FindChild("wheels").FindChild("frontLeft").GetComponent<WheelCollider>();
         frontAxle.rightWheel = transform.FindChild("wheels").FindChild("frontRight").GetComponent<WheelCollider>();
@@ -63,17 +69,39 @@ public class SimpleCarController : MonoBehaviour {
 			isMove = false;
 		}
 
+        if(Input.GetButtonDown(InputUtil.buttonX)){
+			isBrake = true;
+		}
+
+		if(Input.GetButtonUp(InputUtil.buttonX)){
+			isBrake = false;
+		}
+
+        if(Input.GetButtonDown(InputUtil.buttonY)){
+			isBack = true;
+		}
+
+		if(Input.GetButtonUp(InputUtil.buttonY)){
+			isBack = false;
+		}
+
         if(isMove){
 			motor += acceleration;
 			if(motor >= maxMotorTorque){
 				motor = maxMotorTorque;
 			}
-		}else{
+		}else if(isBack){
+            motor -= acceleration;
+			if(motor <= -maxMotorTorque){
+				motor = -maxMotorTorque;
+			}
+        }else{
 			motor = 0.0f;
 		}
+
         // float motor = maxMotorTorque * Input.GetAxis("Vertical");
         float steering = maxSteeringAngle * Input.GetAxis("Horizontal");
-    
+
         foreach (AxleInfo axleInfo in axleInfos) {
             if (axleInfo.steering) {
                 axleInfo.leftWheel.steerAngle = steering;
@@ -83,6 +111,15 @@ public class SimpleCarController : MonoBehaviour {
                 axleInfo.leftWheel.motorTorque = motor;
                 axleInfo.rightWheel.motorTorque = motor;
             }
+
+            if(isBrake){
+                axleInfo.leftWheel.brakeTorque = maxBrakeTorque;
+                axleInfo.rightWheel.brakeTorque = maxBrakeTorque;
+            }else{
+                axleInfo.leftWheel.brakeTorque = 0.0f;
+                axleInfo.rightWheel.brakeTorque = 0.0f;
+            }
+            
             ApplyLocalPositionToVisuals(axleInfo.leftWheel);
             ApplyLocalPositionToVisuals(axleInfo.rightWheel);
         }
